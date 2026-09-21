@@ -478,14 +478,29 @@
       );
     });
   </script>
-  <footer style="margin-top: 30px; text-align: center; font-size: 0.75rem; color: #64748b; max-width: 420px; line-height: 1.5; padding-bottom: 20px;">
-  <p style="margin: 4px 0; font-weight: 600; color: #94a3b8;">
-    © 2026 FM DESIGN Digital Studio. Sva prava zadržana.
-  </p>
-  <p style="margin: 2px 0;">Verzija: 3.0.0 (MNE Edition)</p>
-  <p style="margin: 8px 0; font-size: 0.68rem; opacity: 0.8;">
-    * Aplikacija je informativnog karaktera i ne zamjenjuje obvezu poštovanja prometnih propisa i važeće signalizacije.
-  </p>
-</footer>
+  <!-- Diskretno podnožje na ekranu -->
+    <footer style="margin-top: 25px; text-align: center; font-size: 0.75rem; color: #64748b; max-width: 420px; line-height: 1.4; padding-bottom: 20px;">
+      <p style="margin: 2px 0; font-weight: 600; color: #94a3b8;">
+        © 2026 FM DESIGN Digital Studio. Sva prava zadržana.
+      </p>
+      <p style="margin: 2px 0;">Verzija 3.0.0 (Build 2026)</p>
+      <p style="margin: 6px 0;">
+        <a href="javascript:void(0)" onclick="document.getElementById('legalModal').style.display='flex'" style="color: #38bdf8; text-decoration: underline; font-size: 0.72rem;">
+          Pravne napomene i kontakt
+        </a>
+      </p>
+    </footer>
+
+    <!-- Skočni prozor koji se otvara na klik -->
+    <div id="legalModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; justify-content: center; align-items: center; padding: 20px;" onclick="this.style.display='none'">
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; max-width: 380px; font-size: 0.8rem; color: #cbd5e1; line-height: 1.5;" onclick="event.stopPropagation()">
+        <h3 style="margin-top: 0; color: #f8fafc; font-size: 1rem;">Odricanje odgovornosti</h3>
+        <p>Aplikacija služi isključivo kao informativni asistent i podrška savjesnoj vožnji. FM DESIGN Digital Studio ne preuzima odgovornost za prometne prekršaje, kazne ili netočnosti nastale gubitkom GPS signala ili promjenama na cesti.</p>
+        <p>Vozač je dužan u svakom trenutku poštovati prometne propise i vertikalnu signalizaciju.</p>
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
+        <p style="margin-bottom: 15px;"><strong>Prijave novih lokacija:</strong><br>podrska@fmdesign.me</p>
+        <button onclick="document.getElementById('legalModal').style.display='none'" style="width: 100%; padding: 8px; background: #0284c7; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Zatvori</button>
+      </div>
+    </div>
 </body>
 </html>

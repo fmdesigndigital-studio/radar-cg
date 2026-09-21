@@ -107,7 +107,16 @@
       font-size: 0.85rem;
       color: var(--text-sub);
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
+    }
+
+    .loc-status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
     .violations-grid {
@@ -159,6 +168,10 @@
   <div id="alertCard" class="main-card status-safe">
     <div class="location-title" id="locTitle">Čekam podatke...</div>
     <div class="location-desc" id="locDesc">Pritisni dugme ispod za početak</div>
+    
+    <div style="display: flex; justify-content: center;">
+      <span id="locStatusBadge" class="loc-status-badge" style="display: none;"></span>
+    </div>
 
     <div class="distance-display">
       <div class="distance-value" id="distVal">--</div>
@@ -176,18 +189,19 @@
   </div>
 
   <script>
+    // 1. Registracija Service Workera
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log('PWA Service Worker spreman.'))
         .catch(err => console.error('PWA greška:', err));
     }
 
-    // OVDE DODATI PREOSTALE LOKACIJE IZ PDF-a U ISTOM FORMATU
     const markdownDatabase = [
 `# Lokacija 001
 - **ID Lokacije:** 001
 - **Grad:** Podgorica
 - **Naziv lokacije:** Raskrsnica bulevara Mihaila Lalića
+- **Status:** Završeno
 - **GPS Koordinate:**
   - Širina (Latitude): 42.44375
   - Dužina (Longitude): 19.24581111`,
@@ -196,24 +210,35 @@
 - **ID Lokacije:** 036
 - **Grad:** Kotor
 - **Naziv lokacije:** Van naselja - magistralni put M-1, dionica Lipci - Kotor
+- **Status:** Nije obrađena
 - **GPS Koordinate:**
   - Širina (Latitude): 42.49827222
   - Dužina (Longitude): 18.69217028`
     ];
 
+    // 2. Očišćen parser baze sa Status poljem
     function parseLocationFromMd(mdText) {
       const idMatch = mdText.match(/ID Lokacije:\s*([0-9]+)/);
       const latMatch = mdText.match(/Širina \(Latitude\):\s*([0-9.]+)/);
       const lonMatch = mdText.match(/Dužina \(Longitude\):\s*([0-9.]+)/);
+      
+      const cleanField = (text) => text ? text.replace(/\*\*/g, '').trim() : '';
+
       const nameMatch = mdText.match(/Naziv lokacije:\s*(.+)/);
       const cityMatch = mdText.match(/Grad:\s*(.+)/);
+      const statusMatch = mdText.match(/Status:\s*(.+)/);
+
+      const rawStatus = statusMatch ? cleanField(statusMatch[1]) : "Završeno";
+      const isActive = rawStatus.toLowerCase().includes("završeno") || rawStatus.toLowerCase().includes("aktivno");
 
       return {
         id: idMatch ? idMatch[1] : "000",
         lat: latMatch ? parseFloat(latMatch[1]) : null,
         lon: lonMatch ? parseFloat(lonMatch[1]) : null,
-        title: nameMatch ? nameMatch[1].trim() : "Nepoznata lokacija",
-        city: cityMatch ? cityMatch[1].trim() : ""
+        title: nameMatch ? cleanField(nameMatch[1]) : "Nepoznata lokacija",
+        city: cityMatch ? cleanField(cityMatch[1]) : "",
+        statusText: rawStatus,
+        isActive: isActive
       };
     }
 
@@ -283,6 +308,7 @@
     const distVal = document.getElementById("distVal");
     const locTitle = document.getElementById("locTitle");
     const locDesc = document.getElementById("locDesc");
+    const locStatusBadge = document.getElementById("locStatusBadge");
     const alertCard = document.getElementById("alertCard");
     const gpsStatus = document.getElementById("gpsStatus");
     const startBtn = document.getElementById("startBtn");
@@ -304,25 +330,25 @@
         return;
       }
 
-      gpsStatus.textContent = "GPS Aktivan";
-      gpsStatus.style.background = "#065f46";
+      gpsStatus.textContent = "Tražim satelite...";
+      gpsStatus.style.background = "#ca8a04";
 
+      // 3. Osvežavanje lokacije uz odbacivanje nepreciznih stanica
       navigator.geolocation.watchPosition(
         (position) => {
-          const accuracy = position.coords.accuracy;
-          if (accuracy > 25) {
-            gpsStatus.textContent = `Slab signal (${Math.round(accuracy)}m greška)`;
-            gpsStatus.style.background = "#ca8a04";
-            return; 
-          }
-
-          if (gpsLost) {
-            gpsLost = false;
-            speakWarning("GPS signal je ponovo uspostavljen.");
-          }
+          const acc = Math.round(position.coords.accuracy);
           
-          gpsStatus.textContent = "GPS Aktivan";
-          gpsStatus.style.background = "#065f46";
+          if (acc > 50) {
+            gpsStatus.textContent = `Slab signal (${acc}m greška)`;
+            gpsStatus.style.background = "#ca8a04";
+          } else {
+            if (gpsLost) {
+              gpsLost = false;
+              speakWarning("GPS signal je ponovo uspostavljen.");
+            }
+            gpsStatus.textContent = `GPS Precizan (${acc}m)`;
+            gpsStatus.style.background = "#065f46";
+          }
 
           const userLat = position.coords.latitude;
           const userLon = position.coords.longitude;
@@ -332,7 +358,6 @@
           
           if (prevLat !== null && prevLon !== null) {
             const distMoved = calculateDistance(prevLat, prevLon, userLat, userLon);
-            
             if (currentHeading === null && distMoved > 5 && speed > 2.5) {
               currentHeading = calculateBearing(prevLat, prevLon, userLat, userLon);
               lastValidHeading = currentHeading;
@@ -379,6 +404,20 @@
             alerted150m = false;
             locTitle.textContent = activeLoc.title;
             locDesc.textContent = activeLoc.city;
+
+            // 4. Ažuriranje prikaza statusa aktivne tačke
+            locStatusBadge.style.display = "inline-block";
+            if (activeLoc.isActive) {
+              locStatusBadge.textContent = "● AKTIVAN NADZOR";
+              locStatusBadge.style.background = "#065f46";
+              locStatusBadge.style.color = "#34d399";
+              locStatusBadge.style.border = "1px solid #059669";
+            } else {
+              locStatusBadge.textContent = "○ U PRIPREMI (Nije aktivno)";
+              locStatusBadge.style.background = "#334155";
+              locStatusBadge.style.color = "#94a3b8";
+              locStatusBadge.style.border = "1px solid #475569";
+            }
           }
 
           if (activeDistance >= 1000) {
@@ -397,16 +436,25 @@
             isApproaching = (angleDiff <= 60);
           }
 
+          // 5. Odvajanje alarma za aktivne i neaktivne mete
           if (activeDistance <= 150 && isApproaching) {
-            alertCard.className = "main-card status-alert";
-            if (!alerted150m) {
-              speakWarning("Kritičan oprez! Kamere za 150 metara.");
-              alerted150m = true;
+            if (activeLoc.isActive) {
+              alertCard.className = "main-card status-alert";
+              if (!alerted150m) {
+                speakWarning("Kritičan oprez! Kamere za 150 metara.");
+                alerted150m = true;
+              }
+            } else {
+              alertCard.className = "main-card status-warn";
             }
           } else if (activeDistance <= 500 && isApproaching) {
             alertCard.className = "main-card status-warn";
             if (!alerted500m) {
-              speakWarning("Pažnja. Za 500 metara prilazite pametnoj raskrsnici.");
+              if (activeLoc.isActive) {
+                speakWarning("Pažnja. Za 500 metara prilazite pametnoj raskrsnici.");
+              } else {
+                speakWarning("Za 500 metara je radarska zona u pripremi.");
+              }
               alerted500m = true;
             }
           } else {
@@ -426,7 +474,7 @@
             alertCard.className = "main-card status-warn";
           }
         },
-        { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 } // maximumAge 0 rješava nepreciznost
       );
     });
   </script>

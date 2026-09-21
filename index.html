@@ -266,12 +266,42 @@
       return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
     }
 
+    // Učitavanje glasova u pozadini (kako bi bili spremni)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    }
+
+    function getMaleEnglishVoice() {
+      const voices = window.speechSynthesis.getVoices();
+      let selectedVoice = voices.find(voice => 
+        voice.lang.startsWith('en') && 
+        (voice.name.toLowerCase().includes('male') || 
+         voice.name.toLowerCase().includes('daniel') || 
+         voice.name.toLowerCase().includes('david') || 
+         voice.name.toLowerCase().includes('guy') || 
+         voice.name.toLowerCase().includes('arthur') || 
+         voice.name.toLowerCase().includes('mark'))
+      );
+      
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang.startsWith('en-GB') || voice.lang.startsWith('en-US'));
+      }
+      return selectedVoice;
+    }
+
     function speakWarning(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel(); 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'bs-BA'; 
+        
+        utterance.lang = 'en-GB'; 
+        const voice = getMaleEnglishVoice();
+        if (voice) {
+          utterance.voice = voice;
+        }
+        
         utterance.rate = 1.0;
+        utterance.pitch = 0.9; 
         window.speechSynthesis.speak(utterance);
       }
     }
@@ -322,7 +352,7 @@
         window.speechSynthesis.speak(silentMsg);
       }
 
-      speakWarning("Praćenje aktivirano. Srećan put!");
+      speakWarning("Tracking activated. Have a safe drive.");
       startBtn.style.display = "none";
 
       if (!navigator.geolocation) {
@@ -344,7 +374,7 @@
           } else {
             if (gpsLost) {
               gpsLost = false;
-              speakWarning("GPS signal je ponovo uspostavljen.");
+              speakWarning("GPS signal restored.");
             }
             gpsStatus.textContent = `GPS Precizan (${acc}m)`;
             gpsStatus.style.background = "#065f46";
@@ -441,7 +471,7 @@
             if (activeLoc.isActive) {
               alertCard.className = "main-card status-alert";
               if (!alerted150m) {
-                speakWarning("Kritičan oprez! Kamere za 150 metara.");
+                speakWarning("Warning. Traffic cameras ahead in 150 meters.");
                 alerted150m = true;
               }
             } else {
@@ -451,9 +481,9 @@
             alertCard.className = "main-card status-warn";
             if (!alerted500m) {
               if (activeLoc.isActive) {
-                speakWarning("Pažnja. Za 500 metara prilazite pametnoj raskrsnici.");
+                speakWarning("Attention. Approaching a smart intersection in 500 meters.");
               } else {
-                speakWarning("Za 500 metara je radarska zona u pripremi.");
+                speakWarning("Attention. Approaching a planned camera zone in 500 meters.");
               }
               alerted500m = true;
             }
@@ -468,7 +498,7 @@
         (error) => {
           if (!gpsLost) {
             gpsLost = true;
-            speakWarning("Gubitak GPS signala. Tražim satelite.");
+            speakWarning("GPS signal lost. Searching for satellites.");
             gpsStatus.textContent = "Tražim satelite...";
             gpsStatus.style.background = "#ca8a04";
             alertCard.className = "main-card status-warn";

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <filter id="neonGlow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="lensReflect" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc" />
+      <stop offset="40%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="alertGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f87171" />
+      <stop offset="100%" stop-color="#ef4444" />
+    </linearGradient>
+  </defs>
+
+  <!-- Tamna kružna pozadina -->
+  <circle cx="256" cy="256" r="236" fill="#141c2b" stroke="#1e293b" stroke-width="3" />
+
+  <!-- Vanjski prsten sa kompasom -->
+  <g filter="url(#neonGlow)">
+    <polygon points="256,40 251,100 261,100" fill="#22c55e" />
+    <polygon points="256,472 251,412 261,412" fill="#22c55e" />
+    <polygon points="472,256 412,251 412,261" fill="#22c55e" />
+    <polygon points="40,256 100,251 100,261" fill="#22c55e" />
+    <circle cx="256" cy="256" r="170" fill="none" stroke="#22c55e" stroke-width="7" />
+  </g>
+
+  <path d="M 190 156 A 110 110 0 0 1 322 156" fill="none" stroke="#22c55e" stroke-width="18" stroke-linecap="round" />
+
+  <!-- Lijevi zeleni talasi -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M 194 210 A 62 62 0 0 0 194 302" stroke="#22c55e" stroke-width="13" />
+    <path d="M 166 182 A 102 102 0 0 0 166 330" stroke="#22c55e" stroke-width="15" />
+    <path d="M 136 154 A 144 144 0 0 0 136 358" stroke="#22c55e" stroke-width="17" />
+  </g>
+
+  <!-- Desni plavi i crveni talasi -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M 318 210 A 62 62 0 0 1 318 302" stroke="#0ea5e9" stroke-width="13" />
+    <path d="M 346 182 A 102 102 0 0 1 346 330" stroke="#f97316" stroke-width="15" />
+    <path d="M 376 154 A 144 144 0 0 1 376 358" stroke="url(#alertGrad)" stroke-width="17" />
+  </g>
+
+  <!-- Pin marker i mapa Crne Gore -->
+  <path d="M 256 422 L 202 320 Q 256 348 310 320 Z" fill="#22c55e" stroke="#16a34a" stroke-width="2" />
+  <path d="M 250 342 L 256 344 L 263 340 L 268 344 L 273 349 L 268 355 L 265 362 L 259 367 L 257 375 L 253 388 L 249 385 L 247 378 L 243 371 L 245 363 L 241 356 L 245 348 Z" fill="#0f172a" opacity="0.95" />
+
+  <!-- Centralna kamera -->
+  <g>
+    <path d="M 226 195 L 234 184 L 278 184 L 286 195 H 318 A 12 12 0 0 1 330 207 V 288 A 12 12 0 0 1 318 300 H 194 A 12 12 0 0 1 182 288 V 207 A 12 12 0 0 1 194 195 Z" fill="#22c55e" />
+    <circle cx="308" cy="216" r="6" fill="#141c2b" />
+    <circle cx="256" cy="246" r="32" fill="#141c2b" />
+    <circle cx="256" cy="246" r="24" fill="url(#lensReflect)" />
+    <ellipse cx="249" cy="239" rx="8" ry="5" fill="#ffffff" opacity="0.8" transform="rotate(-30 249 239)" />
+  </g>
+</svg>

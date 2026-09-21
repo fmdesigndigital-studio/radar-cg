@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar Alert CG</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --accent-green: #22c55e;
+      --accent-yellow: #eab308;
+      --accent-red: #ef4444;
+      --border: #334155;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      margin: 0;
+      color: #38bdf8;
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--border);
+      transition: background 0.3s ease;
+    }
+
+    .main-card {
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid var(--border);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      transition: border-color 0.3s ease;
+    }
+
+    .status-safe { border-color: var(--accent-green); }
+    .status-warn { border-color: var(--accent-yellow); }
+    .status-alert { border-color: var(--accent-red); animation: pulse 1s infinite; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .distance-display {
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .distance-value {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #f1f5f9;
+    }
+
+    .distance-unit {
+      font-size: 1rem;
+      color: var(--text-sub);
+    }
+
+    .location-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .location-desc {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .violations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .violation-tag {
+      background: #0b1329;
+      border: 1px solid #1e3a8a;
+      border-radius: 8px;
+      padding: 10px 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .btn-action {
+      margin-top: 20px;
+      width: 100%;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #0284c7;
+      color: white;
+      transition: background 0.2s;
+    }
+
+    .btn-action:active { background: #0369a1; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Radar Alert CG</h1>
+    <div class="badges">
+      <div id="gpsStatus" class="status-badge">GPS Neaktivan</div>
+      <div id="wakeStatus" class="status-badge">Ekran se gasi</div>
+    </div>
+  </header>
+
+  <div id="alertCard" class="main-card status-safe">
+    <div class="location-title" id="locTitle">Čekam podatke...</div>
+    <div class="location-desc" id="locDesc">Pritisni dugme ispod za početak</div>
+
+    <div class="distance-display">
+      <div class="distance-value" id="distVal">--</div>
+      <div class="distance-unit" id="distUnit">udaljenost</div>
+    </div>
+
+    <div class="violations-grid">
+      <div class="violation-tag">🚦 Crveno svjetlo</div>
+      <div class="violation-tag">⚡ Brzina</div>
+      <div class="violation-tag">📱 Telefon</div>
+      <div class="violation-tag">💺 Pojas</div>
+    </div>
+
+    <button id="startBtn" class="btn-action">Pokreni praćenje (Vožnja)</button>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('PWA Service Worker spreman.'))
+        .catch(err => console.error('PWA greška:', err));
+    }
+
+    // OVDE DODATI PREOSTALE LOKACIJE IZ PDF-a U ISTOM FORMATU
+    const markdownDatabase = [
+`# Lokacija 001
+- **ID Lokacije:** 001
+- **Grad:** Podgorica
+- **Naziv lokacije:** Raskrsnica bulevara Mihaila Lalića
+- **GPS Koordinate:**
+  - Širina (Latitude): 42.44375
+  - Dužina (Longitude): 19.24581111`,
+  
+`# Lokacija 036
+- **ID Lokacije:** 036
+- **Grad:** Kotor
+- **Naziv lokacije:** Van naselja - magistralni put M-1, dionica Lipci - Kotor
+- **GPS Koordinate:**
+  - Širina (Latitude): 42.49827222
+  - Dužina (Longitude): 18.69217028`
+    ];
+
+    function parseLocationFromMd(mdText) {
+      const idMatch = mdText.match(/ID Lokacije:\s*([0-9]+)/);
+      const latMatch = mdText.match(/Širina \(Latitude\):\s*([0-9.]+)/);
+      const lonMatch = mdText.match(/Dužina \(Longitude\):\s*([0-9.]+)/);
+      const nameMatch = mdText.match(/Naziv lokacije:\s*(.+)/);
+      const cityMatch = mdText.match(/Grad:\s*(.+)/);
+
+      return {
+        id: idMatch ? idMatch[1] : "000",
+        lat: latMatch ? parseFloat(latMatch[1]) : null,
+        lon: lonMatch ? parseFloat(lonMatch[1]) : null,
+        title: nameMatch ? nameMatch[1].trim() : "Nepoznata lokacija",
+        city: cityMatch ? cityMatch[1].trim() : ""
+      };
+    }
+
+    const locations = markdownDatabase.map(parseLocationFromMd);
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3;
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Math.round(R * c);
+    }
+
+    function calculateBearing(lat1, lon1, lat2, lon2) {
+      const toRad = Math.PI / 180;
+      const dLon = (lon2 - lon1) * toRad;
+      const y = Math.sin(dLon) * Math.cos(lat2 * toRad);
+      const x = Math.cos(lat1 * toRad) * Math.sin(lat2 * toRad) -
+                Math.sin(lat1 * toRad) * Math.cos(lat2 * toRad) * Math.cos(dLon);
+      return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    function speakWarning(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); 
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'bs-BA'; 
+        utterance.rate = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    let wakeLock = null;
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          const statusEl = document.getElementById("wakeStatus");
+          statusEl.textContent = "Ekran budan ☀️";
+          statusEl.style.background = "#065f46";
+        }
+      } catch (err) {
+        console.error("Wake Lock greška:", err);
+      }
+    }
+    
+    document.addEventListener('visibilitychange', () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') {
+        requestWakeLock();
+      }
+    });
+
+    let currentNearestId = null;
+    let alerted500m = false;
+    let alerted150m = false;
+    let gpsLost = false;
+    
+    let prevLat = null;
+    let prevLon = null;
+    let lastValidHeading = null;
+
+    const distVal = document.getElementById("distVal");
+    const locTitle = document.getElementById("locTitle");
+    const locDesc = document.getElementById("locDesc");
+    const alertCard = document.getElementById("alertCard");
+    const gpsStatus = document.getElementById("gpsStatus");
+    const startBtn = document.getElementById("startBtn");
+
+    startBtn.addEventListener("click", () => {
+      requestWakeLock(); 
+      
+      if ('speechSynthesis' in window) {
+        const silentMsg = new SpeechSynthesisUtterance('');
+        silentMsg.volume = 0;
+        window.speechSynthesis.speak(silentMsg);
+      }
+
+      speakWarning("Praćenje aktivirano. Srećan put!");
+      startBtn.style.display = "none";
+
+      if (!navigator.geolocation) {
+        alert("GPS nije podržan na ovom uređaju.");
+        return;
+      }
+
+      gpsStatus.textContent = "GPS Aktivan";
+      gpsStatus.style.background = "#065f46";
+
+      navigator.geolocation.watchPosition(
+        (position) => {
+          const accuracy = position.coords.accuracy;
+          if (accuracy > 25) {
+            gpsStatus.textContent = `Slab signal (${Math.round(accuracy)}m greška)`;
+            gpsStatus.style.background = "#ca8a04";
+            return; 
+          }
+
+          if (gpsLost) {
+            gpsLost = false;
+            speakWarning("GPS signal je ponovo uspostavljen.");
+          }
+          
+          gpsStatus.textContent = "GPS Aktivan";
+          gpsStatus.style.background = "#065f46";
+
+          const userLat = position.coords.latitude;
+          const userLon = position.coords.longitude;
+          const speed = position.coords.speed || 0; 
+          
+          let currentHeading = position.coords.heading;
+          
+          if (prevLat !== null && prevLon !== null) {
+            const distMoved = calculateDistance(prevLat, prevLon, userLat, userLon);
+            
+            if (currentHeading === null && distMoved > 5 && speed > 2.5) {
+              currentHeading = calculateBearing(prevLat, prevLon, userLat, userLon);
+              lastValidHeading = currentHeading;
+            } else if (currentHeading === null) {
+              currentHeading = lastValidHeading; 
+            } else {
+              lastValidHeading = currentHeading; 
+            }
+          }
+          
+          prevLat = userLat;
+          prevLon = userLon;
+
+          let bestLoc = null;
+          let minDistance = Infinity;
+
+          locations.forEach(loc => {
+            const dist = calculateDistance(userLat, userLon, loc.lat, loc.lon);
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestLoc = loc;
+            }
+          });
+
+          if (!bestLoc) return;
+
+          let activeLoc = bestLoc;
+          let activeDistance = minDistance;
+
+          if (currentNearestId !== null) {
+            const currentLocData = locations.find(l => l.id === currentNearestId);
+            if (currentLocData) {
+              const distToCurrent = calculateDistance(userLat, userLon, currentLocData.lat, currentLocData.lon);
+              if (distToCurrent < 800 && (distToCurrent - minDistance) < 200) {
+                activeLoc = currentLocData;
+                activeDistance = distToCurrent;
+              }
+            }
+          }
+
+          if (currentNearestId !== activeLoc.id) {
+            currentNearestId = activeLoc.id;
+            alerted500m = false;
+            alerted150m = false;
+            locTitle.textContent = activeLoc.title;
+            locDesc.textContent = activeLoc.city;
+          }
+
+          if (activeDistance >= 1000) {
+            distVal.textContent = (activeDistance / 1000).toFixed(1);
+            document.getElementById("distUnit").textContent = "kilometara";
+          } else {
+            distVal.textContent = activeDistance;
+            document.getElementById("distUnit").textContent = "metara";
+          }
+
+          let isApproaching = true;
+          if (currentHeading !== null) {
+            const bearingToTarget = calculateBearing(userLat, userLon, activeLoc.lat, activeLoc.lon);
+            let angleDiff = Math.abs(currentHeading - bearingToTarget);
+            if (angleDiff > 180) angleDiff = 360 - angleDiff;
+            isApproaching = (angleDiff <= 60);
+          }
+
+          if (activeDistance <= 150 && isApproaching) {
+            alertCard.className = "main-card status-alert";
+            if (!alerted150m) {
+              speakWarning("Kritičan oprez! Kamere za 150 metara.");
+              alerted150m = true;
+            }
+          } else if (activeDistance <= 500 && isApproaching) {
+            alertCard.className = "main-card status-warn";
+            if (!alerted500m) {
+              speakWarning("Pažnja. Za 500 metara prilazite pametnoj raskrsnici.");
+              alerted500m = true;
+            }
+          } else {
+            alertCard.className = "main-card status-safe";
+            if (activeDistance > 600) {
+              alerted500m = false;
+              alerted150m = false;
+            }
+          }
+        },
+        (error) => {
+          if (!gpsLost) {
+            gpsLost = true;
+            speakWarning("Gubitak GPS signala. Tražim satelite.");
+            gpsStatus.textContent = "Tražim satelite...";
+            gpsStatus.style.background = "#ca8a04";
+            alertCard.className = "main-card status-warn";
+          }
+        },
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+      );
+    });
+  </script>
+</body>
+</html>

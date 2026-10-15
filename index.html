@@ -196,24 +196,799 @@
         .catch(err => console.error('PWA greška:', err));
     }
 
+    // Kompletna baza: svih 88 lokacija formatiranih za tvoj parser
     const markdownDatabase = [
 `# Lokacija 001
-- **ID Lokacije:** 001
-- **Grad:** Podgorica
-- **Naziv lokacije:** Raskrsnica bulevara Mihaila Lalića
-- **Status:** Završeno
-- **GPS Koordinate:**
+- ID Lokacije: 001
+- Grad: Podgorica
+- Naziv lokacije: Raskrsnica bulevara Mihaila Lalića, S.P. Cetinjskog i Džordža Vašingtona
+- Status: Završeno
+- GPS Koordinate:
   - Širina (Latitude): 42.44375
   - Dužina (Longitude): 19.24581111`,
-  
+
+`# Lokacija 002
+- ID Lokacije: 002
+- Grad: Podgorica
+- Naziv lokacije: Raskrsnica bulevara S.P. Cetinjskog, Jovana Tomaševića i ulice Ivana Milutinovića
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.44116389
+  - Dužina (Longitude): 19.25468889`,
+
+`# Lokacija 003
+- ID Lokacije: 003
+- Grad: Podgorica
+- Naziv lokacije: Raskrsnica bulevara Jovana Tomaševića, 13. jula i mosta Milenijum
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.44546944
+  - Dužina (Longitude): 19.25719722`,
+
+`# Lokacija 004
+- ID Lokacije: 004
+- Grad: Podgorica
+- Naziv lokacije: Kod podvožnjaka, bulevar Ivana Crnojevića
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.44166667
+  - Dužina (Longitude): 19.27483333`,
+
+`# Lokacija 005
+- ID Lokacije: 005
+- Grad: Podgorica
+- Naziv lokacije: Raskrsnica sa ul. Dajbabskom, Zabjelo
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.40829722
+  - Dužina (Longitude): 19.24756111`,
+
+`# Lokacija 006
+- ID Lokacije: 006
+- Grad: Podgorica
+- Naziv lokacije: Crkva Svetog Đorđa, Donja Cijevna
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.37336111
+  - Dužina (Longitude): 19.22502778`,
+
+`# Lokacija 007
+- ID Lokacije: 007
+- Grad: Podgorica
+- Naziv lokacije: Magistralni put M-2, dionica Virpazar - Podgorica, Vranjina (Point A)
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.31127778
+  - Dužina (Longitude): 19.20563889`,
+
+`# Lokacija 008
+- ID Lokacije: 008
+- Grad: Podgorica
+- Naziv lokacije: Magistralni put M-2, dionica Virpazar - Podgorica, Vranjina (Point B)
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.30597222
+  - Dužina (Longitude): 19.186`,
+
+`# Lokacija 009
+- ID Lokacije: 009
+- Grad: Podgorica
+- Naziv lokacije: Bulevar Josipa Broza Tita, Stari Aerodrom
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.42983333
+  - Dužina (Longitude): 19.27166667`,
+
+`# Lokacija 010
+- ID Lokacije: 010
+- Grad: Podgorica
+- Naziv lokacije: Kod Katoličke Crkve, Stari Aerodrom
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.43806944
+  - Dužina (Longitude): 19.27615278`,
+
+`# Lokacija 011
+- ID Lokacije: 011
+- Grad: Podgorica
+- Naziv lokacije: Bulevar Vilija Branta, ul. Branka Ćopića
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.46133333
+  - Dužina (Longitude): 19.29294444`,
+
+`# Lokacija 012
+- ID Lokacije: 012
+- Grad: Podgorica
+- Naziv lokacije: kod kompleksa Vilage, M-10 Podgorica - Cetinje (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.41535556
+  - Dužina (Longitude): 19.19660833`,
+
+`# Lokacija 013
+- ID Lokacije: 013
+- Grad: Podgorica
+- Naziv lokacije: Raskrsnica sa priključnim putem, M-10 Podgorica - Cetinje (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.41260833
+  - Dužina (Longitude): 19.18429444`,
+
+`# Lokacija 014
+- ID Lokacije: 014
+- Grad: Podgorica
+- Naziv lokacije: Vuk Petrol pumpa, M-10 Podgorica - Cetinje (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.39580556
+  - Dužina (Longitude): 19.15983333`,
+
+`# Lokacija 015
+- ID Lokacije: 015
+- Grad: Podgorica
+- Naziv lokacije: Barutana, M-10 Podgorica - Cetinje (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.39341667
+  - Dužina (Longitude): 19.13613889`,
+
+`# Lokacija 016
+- ID Lokacije: 016
+- Grad: Podgorica
+- Naziv lokacije: Gospoština, magistralni put M-10, dionica Podgorica - Cetinje (Point A)
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.38311111
+  - Dužina (Longitude): 19.10158333`,
+
+`# Lokacija 017
+- ID Lokacije: 017
+- Grad: Podgorica
+- Naziv lokacije: Gospoština, M-10 Podgorica - Cetinje (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.38605556
+  - Dužina (Longitude): 19.08097222`,
+
+`# Lokacija 018
+- ID Lokacije: 018
+- Grad: Tuzi
+- Naziv lokacije: Karabuško Polje, magistralni put M-4, dionica Podgorica - Tuzi
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.38486944
+  - Dužina (Longitude): 19.31217222`,
+
+`# Lokacija 019
+- ID Lokacije: 019
+- Grad: Kolašin
+- Naziv lokacije: Manastir Morača, M-2 Podgorica - Kolašin (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.75492222
+  - Dužina (Longitude): 19.39178333`,
+
+`# Lokacija 020
+- ID Lokacije: 020
+- Grad: Kolašin
+- Naziv lokacije: Manastir Morača, M-2 Podgorica - Kolašin (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.74809861
+  - Dužina (Longitude): 19.38992556`,
+
+`# Lokacija 021
+- ID Lokacije: 021
+- Grad: Kolašin
+- Naziv lokacije: Trebaljevo, M-2 Kolašin - Mojkovac (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.88484444
+  - Dužina (Longitude): 19.53871667`,
+
+`# Lokacija 022
+- ID Lokacije: 022
+- Grad: Kolašin
+- Naziv lokacije: Sjerogošte, M-2 Kolašin - Mojkovac (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.89619444
+  - Dužina (Longitude): 19.53947222`,
+
+`# Lokacija 023
+- ID Lokacije: 023
+- Grad: Danilovgrad
+- Naziv lokacije: Frutak, magistralni put M-3, dionica Nikšić - Danilovgrad (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.58705556
+  - Dužina (Longitude): 19.04486111`,
+
+`# Lokacija 024
+- ID Lokacije: 024
+- Grad: Danilovgrad
+- Naziv lokacije: Kujava, magistralni put M-3, dionica Nikšić - Danilovgrad (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.60140278
+  - Dužina (Longitude): 19.035925`,
+
+`# Lokacija 025
+- ID Lokacije: 025
+- Grad: Danilovgrad
+- Naziv lokacije: Kosić, regionalni put R-23, dionica Danilovgrad - Spuž (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.52320556
+  - Dužina (Longitude): 19.15523611`,
+
+`# Lokacija 026
+- ID Lokacije: 026
+- Grad: Danilovgrad
+- Naziv lokacije: Kosić, regionalni put R-23, dionica Danilovgrad - Spuž (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.51422222
+  - Dužina (Longitude): 19.17017778`,
+
+`# Lokacija 027
+- ID Lokacije: 027
+- Grad: Cetinje
+- Naziv lokacije: Jankovića krš - magistralni put M-10, dionica Podgorica - Cetinje (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.37605278
+  - Dužina (Longitude): 19.03076667`,
+
+`# Lokacija 028
+- ID Lokacije: 028
+- Grad: Cetinje
+- Naziv lokacije: Skretanje za groblje Meterizi, M-10 Podgorica - Cetinje (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.37728889
+  - Dužina (Longitude): 19.05775833`,
+
+`# Lokacija 029
+- ID Lokacije: 029
+- Grad: Cetinje
+- Naziv lokacije: Kod Kika auto - magistralni put M-10, dionica Cetinje - Budva (Point A)
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.37127778
+  - Dužina (Longitude): 18.93452778`,
+
+`# Lokacija 030
+- ID Lokacije: 030
+- Grad: Cetinje
+- Naziv lokacije: Zagrablje - magistralni put M-10, dionica Cetinje - Budva (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.36111111
+  - Dužina (Longitude): 18.93361111`,
+
+`# Lokacija 031
+- ID Lokacije: 031
+- Grad: Cetinje
+- Naziv lokacije: Obzovica - magistralni put M-10, dionica Cetinje - Budva (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.31738889
+  - Dužina (Longitude): 18.93316667`,
+
+`# Lokacija 032
+- ID Lokacije: 032
+- Grad: Cetinje
+- Naziv lokacije: Đurđevo Ždrijelo - magistralni put M-10, dionica Cetinje - Budva (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.30833333
+  - Dužina (Longitude): 18.93972222`,
+
+`# Lokacija 033
+- ID Lokacije: 033
+- Grad: Herceg Novi
+- Naziv lokacije: Sutorina - M-1 GP Debeli Brijeg - Herceg Novi (kod Biro konta)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.46647222
+  - Dužina (Longitude): 18.48347222`,
+
+`# Lokacija 034
+- ID Lokacije: 034
+- Grad: Herceg Novi
+- Naziv lokacije: Meljine - M-1 Zelenika - Herceg Novi (AUTO KLIME)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.45541667
+  - Dužina (Longitude): 18.56363056`,
+
+`# Lokacija 035
+- ID Lokacije: 035
+- Grad: Herceg Novi
+- Naziv lokacije: Bijela - M-1 Herceg Novi - Kamenari (kod SM Petrola)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.45416667
+  - Dužina (Longitude): 18.65388889`,
+
 `# Lokacija 036
-- **ID Lokacije:** 036
-- **Grad:** Kotor
-- **Naziv lokacije:** Van naselja - magistralni put M-1, dionica Lipci - Kotor
-- **Status:** Nije obrađena
-- **GPS Koordinate:**
+- ID Lokacije: 036
+- Grad: Kotor
+- Naziv lokacije: Van naselja - magistralni put M-1, dionica Lipci - Kotor (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
   - Širina (Latitude): 42.49827222
-  - Dužina (Longitude): 18.69217028`
+  - Dužina (Longitude): 18.69217028`,
+
+`# Lokacija 037
+- ID Lokacije: 037
+- Grad: Kotor
+- Naziv lokacije: Van naselja - magistralni put M-1, dionica Lipci - Kotor (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.50796667
+  - Dužina (Longitude): 18.69584444`,
+
+`# Lokacija 038
+- ID Lokacije: 038
+- Grad: Kotor
+- Naziv lokacije: Van naselja - M-1 Kotor - Krtolska raskrsnica
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.39777778
+  - Dužina (Longitude): 18.74722222`,
+
+`# Lokacija 039
+- ID Lokacije: 039
+- Grad: Kotor
+- Naziv lokacije: Van naselja - M-8 dionica Lipci - Grahovo (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.72849167
+  - Dužina (Longitude): 18.60576389`,
+
+`# Lokacija 040
+- ID Lokacije: 040
+- Grad: Kotor
+- Naziv lokacije: Van naselja - M-8 dionica Lipci - Grahovo (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.71219444
+  - Dužina (Longitude): 18.60725`,
+
+`# Lokacija 041
+- ID Lokacije: 041
+- Grad: Budva
+- Naziv lokacije: Van naselja - M-1 Krtolska raskrsnica - Budva (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.28579444
+  - Dužina (Longitude): 18.811025`,
+
+`# Lokacija 042
+- ID Lokacije: 042
+- Grad: Budva
+- Naziv lokacije: van naselja - M-1 Krtolska raskrsnica - Budva (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.29139167
+  - Dužina (Longitude): 18.80739444`,
+
+`# Lokacija 043
+- ID Lokacije: 043
+- Grad: Budva
+- Naziv lokacije: van naselja - magistralni put M-1, Budva - Petrovac
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.25608056
+  - Dužina (Longitude): 18.89776111`,
+
+`# Lokacija 044
+- ID Lokacije: 044
+- Grad: Budva
+- Naziv lokacije: van naselja - M-10 Cetinje - Budva (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.30837222
+  - Dužina (Longitude): 18.86673611`,
+
+`# Lokacija 045
+- ID Lokacije: 045
+- Grad: Budva
+- Naziv lokacije: van naselja - M-10 Cetinje - Budva (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.30251389
+  - Dužina (Longitude): 18.87481389`,
+
+`# Lokacija 046
+- ID Lokacije: 046
+- Grad: Budva
+- Naziv lokacije: van naselja - M-10 Cetinje - Budva (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.30858889
+  - Dužina (Longitude): 18.87410833`,
+
+`# Lokacija 047
+- ID Lokacije: 047
+- Grad: Budva
+- Naziv lokacije: van naselja - M-10 Cetinje - Budva (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.30202778
+  - Dužina (Longitude): 18.89220833`,
+
+`# Lokacija 048
+- ID Lokacije: 048
+- Grad: Bar
+- Naziv lokacije: u blizini supermarketa Voli - M-1 Sutomore - Bar
+- Status: Završeno
+- GPS Koordinate:
+  - Širina (Latitude): 42.1425
+  - Dužina (Longitude): 19.04577778`,
+
+`# Lokacija 049
+- ID Lokacije: 049
+- Grad: Bar
+- Naziv lokacije: Šušanj - magistralni put M-1, dionica Sutomore - Bar
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.11738889
+  - Dužina (Longitude): 19.07559167`,
+
+`# Lokacija 050
+- ID Lokacije: 050
+- Grad: Bar
+- Naziv lokacije: grad Bar - M-1 Bar - Ulcinj (bulevar na izlazu ka Ulcinju)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.09280278
+  - Dužina (Longitude): 19.10496944`,
+
+`# Lokacija 051
+- ID Lokacije: 051
+- Grad: Bar
+- Naziv lokacije: Zaljevo - M-1 Bar - Ulcinj (kod prodavnice E-plus)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.07194444
+  - Dužina (Longitude): 19.12622222`,
+
+`# Lokacija 052
+- ID Lokacije: 052
+- Grad: Bar
+- Naziv lokacije: van naselja - M-2 Virpazar 2 - Podgorica (kod R-28 Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.24631389
+  - Dužina (Longitude): 19.08907778`,
+
+`# Lokacija 053
+- ID Lokacije: 053
+- Grad: Bar
+- Naziv lokacije: van naselja - M-2 Virpazar 2 - Podgorica (kod R-28 Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.26044444
+  - Dužina (Longitude): 19.09444444`,
+
+`# Lokacija 054
+- ID Lokacije: 054
+- Grad: Ulcinj
+- Naziv lokacije: Bratic - magistralni put M-1, dionica Bar - Ulcinj
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 41.95211111
+  - Dužina (Longitude): 19.19282222`,
+
+`# Lokacija 055
+- ID Lokacije: 055
+- Grad: Ulcinj
+- Naziv lokacije: grad Ulcinj - R-22 Ulcinj - Ada (bulevar Teuta)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 41.92049167
+  - Dužina (Longitude): 19.23734444`,
+
+`# Lokacija 056
+- ID Lokacije: 056
+- Grad: Ulcinj
+- Naziv lokacije: Štoj - regionalni put R-22 Ulcinj - Ada (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 41.90830556
+  - Dužina (Longitude): 19.27888889`,
+
+`# Lokacija 057
+- ID Lokacije: 057
+- Grad: Ulcinj
+- Naziv lokacije: Štoj - regionalni put R-22 Ulcinj - Ada (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 41.90372222
+  - Dužina (Longitude): 19.29930556`,
+
+`# Lokacija 058
+- ID Lokacije: 058
+- Grad: Tivat
+- Naziv lokacije: Raskrsnica Donje Seljanovo - M-11 Lepetane - Tivat
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.44128056
+  - Dužina (Longitude): 18.69125278`,
+
+`# Lokacija 059
+- ID Lokacije: 059
+- Grad: Nikšić
+- Naziv lokacije: Straševina - magistralni put M-3, dionica Nikšić - Danilovgrad
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.75575556
+  - Dužina (Longitude): 18.94048611`,
+
+`# Lokacija 060
+- ID Lokacije: 060
+- Grad: Nikšić
+- Naziv lokacije: Cerovo - M-3 dionica Nikšić - Danilovgrad (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.67052778
+  - Dužina (Longitude): 18.97386111`,
+
+`# Lokacija 061
+- ID Lokacije: 061
+- Grad: Nikšić
+- Naziv lokacije: Drenovštica - M-3 dionica Nikšić - Danilovgrad (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.66190556
+  - Dužina (Longitude): 18.981275`,
+
+`# Lokacija 062
+- ID Lokacije: 062
+- Grad: Nikšić
+- Naziv lokacije: Hercegovački put - M-7 Nikšić - Vilusi (kod aerodroma)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.77996389
+  - Dužina (Longitude): 18.90763333`,
+
+`# Lokacija 063
+- ID Lokacije: 063
+- Grad: Nikšić
+- Naziv lokacije: Vilusi - M-6 Nikšić - Vilusi (van naselja Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.75405556
+  - Dužina (Longitude): 18.81605556`,
+
+`# Lokacija 064
+- ID Lokacije: 064
+- Grad: Nikšić
+- Naziv lokacije: Vilusi - M-8 Nikšić - Vilusi (van naselja Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.75156667
+  - Dužina (Longitude): 18.78960556`,
+
+`# Lokacija 065
+- ID Lokacije: 065
+- Grad: Nikšić
+- Naziv lokacije: Carine - M-8 dionica Nikšić - Grahovo (van naselja)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.72627778
+  - Dužina (Longitude): 18.60613889`,
+
+`# Lokacija 066
+- ID Lokacije: 066
+- Grad: Nikšić
+- Naziv lokacije: grad Nikšić - bulevar 13. jula (kod marketa Voli i Eko pumpe)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.76883333
+  - Dužina (Longitude): 18.94938889`,
+
+`# Lokacija 067
+- ID Lokacije: 067
+- Grad: Nikšić
+- Naziv lokacije: Mokra njiva - lokalni put Duklo - Brezovik
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.80113889
+  - Dužina (Longitude): 18.93505278`,
+
+`# Lokacija 068
+- ID Lokacije: 068
+- Grad: Pljevlja
+- Naziv lokacije: Radosavac - M-6 Pljevlja - Đurđevića Tara (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.34827778
+  - Dužina (Longitude): 19.33969444`,
+
+`# Lokacija 069
+- ID Lokacije: 069
+- Grad: Pljevlja
+- Naziv lokacije: Radosavac - M-6 Pljevlja - Đurđevića Tara (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.34347222
+  - Dužina (Longitude): 19.32593889`,
+
+`# Lokacija 070
+- ID Lokacije: 070
+- Grad: Pljevlja
+- Naziv lokacije: prije Mijakovića - M-6 Pljevlja - Tara (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.25422222
+  - Dužina (Longitude): 19.37305556`,
+
+`# Lokacija 071
+- ID Lokacije: 071
+- Grad: Pljevlja
+- Naziv lokacije: prije Mijakovića - M-6 Pljevlja - Tara (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.24719444
+  - Dužina (Longitude): 19.37866667`,
+
+`# Lokacija 072
+- ID Lokacije: 072
+- Grad: Žabljak
+- Naziv lokacije: Kulaš - magistralni put M-6, dionica Žabljak - Šavnik
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.11402778
+  - Dužina (Longitude): 19.12213889`,
+
+`# Lokacija 073
+- ID Lokacije: 073
+- Grad: Šavnik
+- Naziv lokacije: Donja Grabovica - M-6 Žabljak - Šavnik (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.90180556
+  - Dužina (Longitude): 19.05855556`,
+
+`# Lokacija 074
+- ID Lokacije: 074
+- Grad: Šavnik
+- Naziv lokacije: Donja Grabovica - M-6 Žabljak - Šavnik (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.895
+  - Dužina (Longitude): 19.06888889`,
+
+`# Lokacija 075
+- ID Lokacije: 075
+- Grad: Mojkovac
+- Naziv lokacije: raskrsnica sa ul. Mališe Damjanovića - M-2 Kolašin - Mojkovac
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.95966944
+  - Dužina (Longitude): 19.57814722`,
+
+`# Lokacija 076
+- ID Lokacije: 076
+- Grad: Mojkovac
+- Naziv lokacije: Lepenac - M-2 Mojkovac - Slijepač Most (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.99186111
+  - Dužina (Longitude): 19.60178056`,
+
+`# Lokacija 077
+- ID Lokacije: 077
+- Grad: Mojkovac
+- Naziv lokacije: Lepenac - M-2 Mojkovac - Slijepač Most (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.98616667
+  - Dužina (Longitude): 19.62227778`,
+
+`# Lokacija 078
+- ID Lokacije: 078
+- Grad: Bijelo Polje
+- Naziv lokacije: Pripčići - M-2 Ribarevina - Bijelo Polje (obilaznica)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.01211111
+  - Dužina (Longitude): 19.73394444`,
+
+`# Lokacija 079
+- ID Lokacije: 079
+- Grad: Bijelo Polje
+- Naziv lokacije: Nedakusi - M-2 dionica Bijelo Polje - Barski Most (kod Ine)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.05436111
+  - Dužina (Longitude): 19.77027778`,
+
+`# Lokacija 080
+- ID Lokacije: 080
+- Grad: Bijelo Polje
+- Naziv lokacije: Sutivan - M-2 Bijelo Polje - Barski Most (kod Manježa Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.08263889
+  - Dužina (Longitude): 19.77518056`,
+
+`# Lokacija 081
+- ID Lokacije: 081
+- Grad: Bijelo Polje
+- Naziv lokacije: Sutivan - M-2 Bijelo Polje - Barski Most (kod Manježa Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 43.095
+  - Dužina (Longitude): 19.77163889`,
+
+`# Lokacija 082
+- ID Lokacije: 082
+- Grad: Bijelo Polje
+- Naziv lokacije: Zaton - M-5 dionica Ribarevina - Berane (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.99347222
+  - Dužina (Longitude): 19.80191667`,
+
+`# Lokacija 083
+- ID Lokacije: 083
+- Grad: Bijelo Polje
+- Naziv lokacije: Zaton - M-5 dionica Ribarevina - Berane (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.97838889
+  - Dužina (Longitude): 19.80930556`,
+
+`# Lokacija 084
+- ID Lokacije: 084
+- Grad: Berane
+- Naziv lokacije: Buče - regionalni put R-2, Berane - Andrijevica (Point A)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.82422222
+  - Dužina (Longitude): 19.86358333`,
+
+`# Lokacija 085
+- ID Lokacije: 085
+- Grad: Berane
+- Naziv lokacije: Buče - regionalni put R-2, Berane - Andrijevica (Point B)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.81672222
+  - Dužina (Longitude): 19.85297222`,
+
+`# Lokacija 086
+- ID Lokacije: 086
+- Grad: Plav
+- Naziv lokacije: Liješće - regionalni put R-2, dionica Murino - Plav (van naselja)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.64222222
+  - Dužina (Longitude): 19.93063889`,
+
+`# Lokacija 087
+- ID Lokacije: 087
+- Grad: Rožaje
+- Naziv lokacije: Baza - M-5 dionica Berane - Rožaje (Zeleni)
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.8405
+  - Dužina (Longitude): 20.12722222`,
+
+`# Lokacija 088
+- ID Lokacije: 088
+- Grad: Gusinje
+- Naziv lokacije: Dosude - magistralni put M-5, dionica Berane - Rožaje
+- Status: Nije obrađena
+- GPS Koordinate:
+  - Širina (Latitude): 42.57047222
+  - Dužina (Longitude): 19.85377778`
     ];
 
     // 2. Očišćen parser baze sa Status poljem
@@ -504,33 +1279,33 @@
             alertCard.className = "main-card status-warn";
           }
         },
-        { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 } // maximumAge 0 rješava nepreciznost
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
       );
     });
   </script>
-  <!-- Diskretno podnožje na ekranu -->
-    <footer style="margin-top: 25px; text-align: center; font-size: 0.75rem; color: #64748b; max-width: 420px; line-height: 1.4; padding-bottom: 20px;">
-      <p style="margin: 2px 0; font-weight: 600; color: #94a3b8;">
-        © 2026 FM DESIGN Digital Studio. Sva prava zadržana.
-      </p>
-      <p style="margin: 2px 0;">Verzija 3.0.0 (Build 2026)</p>
-      <p style="margin: 6px 0;">
-        <a href="javascript:void(0)" onclick="document.getElementById('legalModal').style.display='flex'" style="color: #38bdf8; text-decoration: underline; font-size: 0.72rem;">
-          Pravne napomene i kontakt
-        </a>
-      </p>
-    </footer>
 
-    <!-- Skočni prozor koji se otvara na klik -->
-    <div id="legalModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; justify-content: center; align-items: center; padding: 20px;" onclick="this.style.display='none'">
-      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; max-width: 380px; font-size: 0.8rem; color: #cbd5e1; line-height: 1.5;" onclick="event.stopPropagation()">
-        <h3 style="margin-top: 0; color: #f8fafc; font-size: 1rem;">Odricanje odgovornosti</h3>
-        <p>Aplikacija služi isključivo kao informativni asistent i podrška savjesnoj vožnji. FM DESIGN Digital Studio ne preuzima odgovornost za prometne prekršaje, kazne ili netočnosti nastale gubitkom GPS signala ili promjenama na cesti.</p>
-        <p>Vozač je dužan u svakom trenutku poštovati prometne propise i vertikalnu signalizaciju.</p>
-        <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
-        <p style="margin-bottom: 15px;"><strong>Prijave novih lokacija:</strong><br>fmdesigndigital@gmail.com</p>
-        <button onclick="document.getElementById('legalModal').style.display='none'" style="width: 100%; padding: 8px; background: #0284c7; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Zatvori</button>
-      </div>
+  <!-- Podnožje sa pravnim napomenama -->
+  <footer style="margin-top: 25px; text-align: center; font-size: 0.75rem; color: #64748b; max-width: 420px; line-height: 1.4; padding-bottom: 20px;">
+    <p style="margin: 2px 0; font-weight: 600; color: #94a3b8;">
+      © 2026 FM DESIGN Digital Studio. Sva prava zadržana.
+    </p>
+    <p style="margin: 2px 0;">Verzija 3.0.0 (Build 2026)</p>
+    <p style="margin: 6px 0;">
+      <a href="javascript:void(0)" onclick="document.getElementById('legalModal').style.display='flex'" style="color: #38bdf8; text-decoration: underline; font-size: 0.72rem;">
+        Pravne napomene i kontakt
+      </a>
+    </p>
+  </footer>
+
+  <div id="legalModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999; justify-content: center; align-items: center; padding: 20px;" onclick="this.style.display='none'">
+    <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; max-width: 380px; font-size: 0.8rem; color: #cbd5e1; line-height: 1.5;" onclick="event.stopPropagation()">
+      <h3 style="margin-top: 0; color: #f8fafc; font-size: 1rem;">Odricanje odgovornosti</h3>
+      <p>Aplikacija služi isključivo kao informativni asistent i podrška savjesnoj vožnji. FM DESIGN Digital Studio ne preuzima odgovornost za prometne prekršaje, kazne ili netočnosti nastale gubitkom GPS signala ili promjenama na cesti.</p>
+      <p>Vozač je dužan u svakom trenutku poštovati prometne propise i vertikalnu signalizaciju.</p>
+      <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
+      <p style="margin-bottom: 15px;"><strong>Prijave novih lokacija:</strong><br>fmdesigndigital@gmail.com</p>
+      <button onclick="document.getElementById('legalModal').style.display='none'" style="width: 100%; padding: 8px; background: #0284c7; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Zatvori</button>
     </div>
+  </div>
 </body>
 </html>
